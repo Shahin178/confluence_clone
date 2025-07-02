@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
 
 const Register = () => {
@@ -56,6 +56,15 @@ const Register = () => {
           Register
         </button>
       </form>
+      <div className="mt-6 text-center">
+        <span className="text-gray-600">Already have an account?</span>
+        <Link
+          to="/login"
+          className="ml-2 text-blue-600 hover:text-blue-800 font-semibold underline transition"
+        >
+          Login
+        </Link>
+      </div>
     </div>
   );
 };

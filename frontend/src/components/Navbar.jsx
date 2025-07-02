@@ -1,12 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
-// import { useAuth } from "../authContext";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../authContext";
 
 const Navbar = () => {
-  // const { token, logout } = useAuth();
+  const { token, logout } = useAuth();
   const navigate = useNavigate();
-  const token = "1we";
+  const location = useLocation();
+
   const handleLogout = () => {
-    // logout();
+    logout();
     navigate("/login");
   };
 
@@ -23,13 +24,7 @@ const Navbar = () => {
           to="/"
           className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
         >
-          Home
-        </Link>
-        <Link
-          to="/search"
-          className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-        >
-          Search
+          Documents
         </Link>
         {token ? (
           <button
@@ -40,18 +35,21 @@ const Navbar = () => {
           </button>
         ) : (
           <>
-            <Link
-              to="/login"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded transition-colors font-semibold shadow-sm ml-2"
-            >
-              Register
-            </Link>
+            {location.pathname === "/login" ? (
+              <Link
+                to="/register"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                Register
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                Login
+              </Link>
+            )}
           </>
         )}
       </div>

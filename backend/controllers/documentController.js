@@ -12,20 +12,36 @@ exports.createDoc = async (req, res) => {
   res.status(201).json(doc);
 };
 
-exports.getDocs = async (req, res) => {
+exports.getPublicDocs = async (req, res) => {
+  const docs = await Document.find({
+    visibility: "public",
+  }).populate("author", "username");
+  res.json(docs);
+};
+
+exports.getDocWithUser = async (req, res) => {
   const docs = await Document.find({
     $or: [
       { visibility: "public" },
-      { author: req.userId },
       { sharedWith: { $elemMatch: { userId: req.userId } } },
+      { author: req.userId },
     ],
   }).populate("author", "username");
   res.json(docs);
 };
 
+exports.getDocById = async (req, res) => {
+  const { id } = req.params;
+  const doc = await Document.findById(id).populate("author", "username");
+  if (!doc) return res.status(404).json({ message: "Document not found" });
+  // Optionally, check permissions here
+  res.json(doc);
+};
+
 exports.updateDoc = async (req, res) => {
   const { id } = req.params;
-  const { content, title } = req.body;
+
+  const { content, title, visibility, sharedWith } = req.body;
 
   const doc = await Document.findById(id);
   if (!doc) return res.status(404).json({ message: "Document not found" });
@@ -34,6 +50,9 @@ exports.updateDoc = async (req, res) => {
 
   doc.content = content;
   doc.title = title;
+  doc.visibility = visibility;
+  doc.sharedWith =
+    visibility === "private" ? sharedWith.map((id) => ({ userId: id })) : [];
   doc.lastModified = new Date();
   await doc.save();
 

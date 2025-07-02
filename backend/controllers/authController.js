@@ -23,6 +23,19 @@ exports.login = async (req, res) => {
   res.json({ token });
 };
 
+exports.getAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 exports.forgotPassword = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(404).json({ message: "User not found" });
@@ -37,7 +50,21 @@ exports.forgotPassword = async (req, res) => {
   res.json({ message: "Reset token sent to email" });
 };
 
+exports.varifyOtp = async (req, res) => {
+  const { email, token } = req.body;
+  const user = await User.findOne({
+    email,
+    resetToken: token,
+    resetTokenExpiry: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(400).json({ message: "Invalid or expired token" });
+  }
+  res.json({ success: true, message: "OTP verified" });
+};
+
 exports.resetPassword = async (req, res) => {
+  
   const { email, token, newPassword } = req.body;
   const user = await User.findOne({
     email,

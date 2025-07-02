@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../authContext";
 
@@ -14,7 +14,7 @@ const Login = () => {
     try {
       const { data } = await api.post("/auth/login", { email, password });
       console.log("Login successful:", data);
-      
+
       login(data.token);
       navigate("/");
     } catch (err) {
@@ -51,6 +51,23 @@ const Login = () => {
           Login
         </button>
       </form>
+      <div className="mt-6 text-center">
+        <span className="text-gray-600">New here?</span>
+        <Link
+          to="/register"
+          className="ml-2 text-blue-600 hover:text-blue-800 font-semibold underline transition"
+        >
+          Create an account
+        </Link>
+      </div>
+      <div className="mt-4 text-center">
+        <Link
+          to="/forgot-password"
+          className="text-blue-500 hover:text-blue-700 font-semibold underline transition"
+        >
+          Forgot password?
+        </Link>
+      </div>
     </div>
   );
 };
