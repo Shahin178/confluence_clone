@@ -10,7 +10,8 @@ exports.register = async (req, res) => {
     return res.status(400).json({ message: "Email already exists" });
 
   const user = await User.create({ email, password, username });
-  res.status(201).json({ message: "User registered" });
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+  res.status(201).json({ token });
 };
 
 exports.login = async (req, res) => {

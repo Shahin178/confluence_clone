@@ -194,12 +194,17 @@ const DocumentEdit = () => {
             <Select
               isMulti
               options={allUsers.map((user) => ({
-                value: user._id,
+                value: String(user._id),
                 label: user.username,
               }))}
               value={allUsers
-                .filter((user) => sharedWith.includes(String(user._id)))
-                .map((user) => ({ value: user._id, label: user.username }))}
+                .filter((user) =>
+                  sharedWith.map(String).includes(String(user._id))
+                )
+                .map((user) => ({
+                  value: String(user._id),
+                  label: user.username,
+                }))}
               onChange={(selected) =>
                 setSharedWith(selected.map((option) => option.value))
               }
