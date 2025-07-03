@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data } = await api.post("/auth/login", { email, password });
-      console.log("Login successful:", data);
+      // console.log("Login successful:", data);
 
       login(data.token);
       navigate("/");

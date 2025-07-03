@@ -25,7 +25,9 @@ exports.login = async (req, res) => {
 
 exports.getAllUser = async (req, res) => {
   try {
-    const users = await User.find();
+    console.log("Fetching all users except the current user",req);
+    
+    const users = await User.find({ _id: { $ne: req.userId } });
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "No users found" });
     }
